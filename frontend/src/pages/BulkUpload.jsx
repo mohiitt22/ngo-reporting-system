@@ -7,18 +7,27 @@ export default function BulkUpload() {
   const [jobId, setJobId] = useState(null);
 
   const upload = async () => {
+    if (!file) {
+      alert("Please select a CSV file");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
 
     const res = await API.post("/reports/upload", formData);
-    setJobId(res.data.job_id);
+    setJobId(res.data.jobId); // ✅ FIXED
   };
 
   return (
     <div>
       <h2>Bulk CSV Upload</h2>
 
-      <input type="file" onChange={e => setFile(e.target.files[0])} />
+      <input
+        type="file"
+        accept=".csv"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
       <button onClick={upload}>Upload</button>
 
       {jobId && <JobStatus jobId={jobId} />}
